@@ -1,0 +1,61 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+
+	<context:annotation-config />
+	<aop:aspectj-autoproxy />
+
+	<bean id="asTarget" class="com.manish.javadev.services.impl.AccountServiceImpl" />
+	<bean id="csTarget" class="com.manish.javadev.services.impl.CustomerServiceImpl" />
+	
+	<!-- your advise classes -->
+	<bean id="methodAround" class="com.manish.javadev.aop.MethodAround" />
+	<bean id="methodThrows" class="com.manish.javadev.aop.MethodThrow" />
+
+	<bean id="securityService" class="com.manish.javadev.aspect.SecurityService" />
+	<bean id="logService" class="com.manish.javadev.aspect.LogService" />
+	<bean id="transactionService" class="com.manish.javadev.aspect.TransactionService" />
+
+
+	<!-- Pointcut for AccountService -->
+	<bean id="PC1"
+		class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+		<property name="expression"
+			value="execution(* com.manish.javadev.services.AccountService.get*(..))" />
+	</bean>
+	<bean name="MIdvisor1"
+		class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="methodAround"></property>
+		<property name="pointcut" ref="PC1"></property>
+	</bean>
+	<bean name="MTdvisor1"
+		class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="methodThrows"></property>
+		<property name="pointcut" ref="PC1"></property>
+	</bean>
+	
+	<!-- Pointcut for CustomerService -->
+	<bean id="PC2"
+		class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+		<property name="expression"
+			value="execution(* com.manish.javadev.services.CustomerService.get*(..))" />
+	</bean>
+	<bean name="MIdvisor2"
+		class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="methodAround"></property>
+		<property name="pointcut" ref="PC2"></property>
+	</bean>
+	<bean name="MTdvisor2"
+		class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="methodThrows"></property>
+		<property name="pointcut" ref="PC2"></property>
+	</bean>
+</beans>
+
